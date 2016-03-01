@@ -180,7 +180,7 @@ class AbortTransfer_In(BaseDCProtocol):
     def __init__(self, nick, dch):
 
         self.nick = nick
-        
+
         # Steal connection from the DCHandler
         self.factory = dch.factory
         self.makeConnection(dch.transport)
@@ -249,7 +249,7 @@ class DCHandler(BaseDCProtocol):
         self.addDispatch('$KillDtella',     0, self.d_KillDtella)
 
         self.addDispatch('$MyNick',         1, self.d_MyNick)
-        
+
         # Chat messages waiting to be sent
         self.chatq = []
         self.chat_counter = 99999
@@ -302,9 +302,9 @@ class DCHandler(BaseDCProtocol):
 
     def d_MyNick(self, nick):
         # This is a fake RevConnect that we should terminate.
-        
+
         dcall_discard(self, 'init_dcall')
-        
+
         if self.state != 'login_1':
             self.fatalError("$MyNick not expected.")
             return
@@ -359,7 +359,7 @@ class DCHandler(BaseDCProtocol):
 
         if n.dcinfo:
             self.pushInfo(n.nick, n.dcinfo)
-        
+
 
     def d_GetNickList(self):
 
@@ -502,7 +502,7 @@ class DCHandler(BaseDCProtocol):
                 suffix = self.main.state.suffix
                 if suffix:
                     loc = '%s|%s' % (loc, suffix)
-                
+
                 info[2] = loc + info[2][-1:]
 
         info = '$'.join(info)
@@ -532,7 +532,7 @@ class DCHandler(BaseDCProtocol):
 
         packet.append(struct.pack('!B', len(search_string)))
         packet.append(search_string)
-        
+
         osm.mrm.newMessage(''.join(packet), tries=4)
 
         # If local searching is enabled, send the search to myself
@@ -543,7 +543,7 @@ class DCHandler(BaseDCProtocol):
     def d_PrivateMsg(self, nick, _1, _2, _3, text):
 
         text = remove_dc_escapes(text)
-        
+
         if nick == self.bot.nick:
 
             # No ! is needed for commands in the private message context
@@ -553,7 +553,7 @@ class DCHandler(BaseDCProtocol):
             def out(text):
                 if text is not None:
                     self.bot.say(text)
-            
+
             self.bot.commandInput(out, text)
             return
 
@@ -715,7 +715,7 @@ class DCHandler(BaseDCProtocol):
 
                 if out_text is not None:
                     self.pushStatus(out_text)
-            
+
             if self.bot.commandInput(out, text[1:], '!'):
                 return
 
@@ -800,7 +800,7 @@ class DCHandler(BaseDCProtocol):
 
 
     def pushRevConnectToMe(self, nick):
-        self.sendLine("$RevConnectToMe %s %s" % (nick, self.nick))        
+        self.sendLine("$RevConnectToMe %s %s" % (nick, self.nick))
 
 
     def pushSearchRequest(self, ipp, search_string):
@@ -823,7 +823,7 @@ class DCHandler(BaseDCProtocol):
 
         def cb():
             self.chatRate_dcall = reactor.callLater(1.0, cb)
-           
+
             if self.chatq:
                 args = self.chatq.pop(0)
                 self.broadcastChatMessage(*args)
@@ -970,7 +970,7 @@ class DCHandler(BaseDCProtocol):
     def event_AddNick(self, n):
         if not self.isProtectedNick(n.nick):
             self.pushHello(n.nick)
-    
+
 
     def event_RemoveNick(self, n, reason):
         if not self.isProtectedNick(n.nick):
@@ -997,11 +997,11 @@ verifyClass(IDtellaStateObserver, DCHandler)
 
 
 class DCFactory(ServerFactory):
-    
+
     def __init__(self, main, listen_port):
         self.main = main
         self.listen_port = listen_port # spliced into search results
-        
+
     def buildProtocol(self, addr):
         if addr.host != '127.0.0.1':
             return None
@@ -1054,7 +1054,7 @@ class DtellaBot(object):
         if not local.use_locations:
             if cmd[0] in self.location_cmds:
                 return False
-            
+
         if cmd[0] in self.freeform_cmds:
             try:
                 text = line.split(' ', 1)[1]
@@ -1062,7 +1062,7 @@ class DtellaBot(object):
                 text = None
 
             f(out, text, prefix)
-            
+
         else:
             def wrapped_out(line):
                 for l in word_wrap(line):
@@ -1070,7 +1070,7 @@ class DtellaBot(object):
                         out(l)
                     else:
                         out(" ")
-           
+
             f(wrapped_out, cmd[1:], prefix)
 
         return True
@@ -1091,7 +1091,7 @@ class DtellaBot(object):
 
     location_cmds = frozenset(['SUFFIX','USERS','SHARED','DENSE'])
 
-    
+
     minihelp = [
         ("--",         "ACTIONS"),
         ("REJOIN",     "Hop back online after a kick or collision"),
@@ -1181,20 +1181,20 @@ class DtellaBot(object):
             "This will list all the known locations, and show how many "
             "bytes of data are being shared from each."
             ),
-        
+
         "DENSE":(
             "",
             "This will list all the known locations, and show the calculated "
             "share density (bytes-per-user) for each."
             ),
-        
+
         "RANK":(
             "<nick>",
             "Compare your share size with everyone else in the network, and "
             "show which place you're currently in.  If <nick> is provided, "
             "this will instead display the ranking of the user with that nick."
             ),
-        
+
         "UDP":(
             "<port>",
             "Specify a port number between 1-65536 to change the UDP port "
@@ -1217,7 +1217,7 @@ class DtellaBot(object):
             "found then a slow, but exhaustive, network discovery of possible peers "
             "on the network will take place until one is found."
             ),
-            
+
         "INVITE":(
             "",
             "If you wish to invite another user to join the network using the "
@@ -1261,7 +1261,7 @@ class DtellaBot(object):
                 if not local.use_locations:
                     if command in self.location_cmds:
                         continue
-                
+
                 if command == "--":
                     out("")
                     out("  --%s--" % description)
@@ -1284,9 +1284,9 @@ class DtellaBot(object):
                 if not local.use_locations:
                     if key in self.location_cmds:
                         raise KeyError
-                    
+
                 (head, body) = self.bighelp[key]
-                
+
             except KeyError:
                 out("Sorry, no help available for '%s'." % key)
 
@@ -1317,15 +1317,16 @@ class DtellaBot(object):
         response = urllib2.urlopen(local.read_board_view_url)
         text = self.main.pk_enc.decrypt(response.read().decode("base64")) + '\n' + ' '.join(args).lower()
         text = '\n'.join(text.split('\n')[-500 : ])
-        text = self.main.pk_enc.encrypt(text).encode("base64")
+	text = self.main.pk_enc.encrypt(text).encode("base64")
 
-        URL = local.read_board_edit_url
+        URL = local.read_board_edit_url + local.read_board_edit_id
 
-        params = [
-            ('id', local.read_board_edit_id),
-            ('text', text),
-            ('submit', 'Save'),
-            ('mode', 'edit')]
+	params = {
+	   'text' : text,
+	   'mode' : 'edit',
+	   'submit': 'Save',
+	   'id' : local.read_board_edit_id
+	}
 
         data = urllib.urlencode(params)
         print("Uploading ...")
@@ -1334,9 +1335,11 @@ class DtellaBot(object):
             response = urllib2.urlopen(req)
             resp_code = response.getcode()
             if resp_code == 200:
-                print(response.geturl())
+                out(response.url)
+	        print(response.read())
             else:
                 out('Error: Could not upload file. HTTP Response Code %s\n' % resp_code)
+
         except urllib2.URLError, e:
             print e
             out('Error: Could not connect to %s\n' % URL)
@@ -1362,7 +1365,7 @@ class DtellaBot(object):
                 out("Changing UDP port to: %d" % port)
                 self.main.changeUDPPort(port)
                 return
-            
+
         self.syntaxHelp(out, 'UDP', prefix)
 
 
@@ -1375,7 +1378,7 @@ class DtellaBot(object):
             else:
                 if not ad.port:
                     out("Port number must be nonzero.")
-                    
+
                 elif ad.auth('sx', self.main):
                     self.main.state.refreshPeer(ad, 0)
                     out("Added to peer cache: %s" % ad.getTextIPPort())
@@ -1394,11 +1397,11 @@ class DtellaBot(object):
         if len(args) == 0:
             self.main.discoverPeers()
             return
-            
+
         self.syntaxHelp(out, 'FINDPEERS', prefix)
 
 
-    def handleCmd_INVITE(self, out, args, prefix):     
+    def handleCmd_INVITE(self, out, args, prefix):
         if len(args) == 0:
             osm = self.main.osm
             if osm:
@@ -1415,9 +1418,9 @@ class DtellaBot(object):
             out("  !addpeer %s" % ad.getTextIPPort())
             out("")
             return
-        
+
         self.syntaxHelp(out, 'INVITE', prefix)
-        
+
 
     def handleCmd_PERSISTENT(self, out, args, prefix):
         if len(args) == 0:
@@ -1486,7 +1489,7 @@ class DtellaBot(object):
             out("Rejoining...")
             self.dch.doRejoin()
             return
-        
+
         self.syntaxHelp(out, 'REJOIN', prefix)
 
 
@@ -1495,7 +1498,7 @@ class DtellaBot(object):
         if not self.dch.isOnline():
             out("You must be online to use %sUSERS." % prefix)
             return
-        
+
         self.showStats(
             out,
             "User Counts",
@@ -1510,7 +1513,7 @@ class DtellaBot(object):
         if not self.dch.isOnline():
             out("You must be online to use %sSHARED." % prefix)
             return
-        
+
         self.showStats(
             out,
             "Bytes Shared",
@@ -1531,7 +1534,7 @@ class DtellaBot(object):
                 return (b/u, u)
             except ZeroDivisionError:
                 return (0, u)
-        
+
         self.showStats(
             out,
             "Share Density",
@@ -1565,7 +1568,7 @@ class DtellaBot(object):
         else:
             self.syntaxHelp(out, 'RANK', prefix)
             return
-        
+
         if target is osm.me:
             who = "You are"
         else:
@@ -1595,9 +1598,9 @@ class DtellaBot(object):
         out("%s %s %d%s place, with a share size of %s." %
             (who, tie, rank, suffix, format_bytes(target.shared))
             )
-        
+
     def handleCmd_TOPIC(self, out, topic, prefix):
-        
+
         if not self.dch.isOnline():
             out("You must be online to use %sTOPIC." % prefix)
             return
@@ -1621,7 +1624,7 @@ class DtellaBot(object):
 
         self.main.state.suffix = text
         self.main.state.saveState()
-        
+
         out("Set location suffix to \"%s\"" % text)
 
         osm = self.main.osm
@@ -1642,7 +1645,7 @@ class DtellaBot(object):
 
             if peers_only and not n.is_peer:
                 continue
-            
+
             try:
                 ucount[n.location] += 1
                 bcount[n.location] += n.shared
@@ -1704,7 +1707,7 @@ class DtellaBot(object):
     def handleCmd_DEBUG(self, out, text, prefix):
 
         out(None)
-        
+
         if not text:
             return
 

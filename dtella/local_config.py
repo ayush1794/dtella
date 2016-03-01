@@ -127,7 +127,7 @@ use_locations = False
 # These should be set to your school's local DNS servers, for efficiency.
 #rdns_servers = ['128.210.11.5','128.210.11.57','128.10.2.5','128.46.154.76']
 #rdns_servers = ['192.168.1.1']#, '4.2.2.2', '8.8.8.8']
-rdns_servers = ['10.120.200.61', '10.120.200.64', '10.120.200.65', 
+rdns_servers = ['10.120.200.61', '10.120.200.64', '10.120.200.65',
              '10.120.200.66', '10.120.200.63', '10.120.200.62']
 #rdns_servers = ['192.168.1.1']
 
@@ -161,7 +161,7 @@ def hostnameToLocation(hostname):
                 return suf_table[suffix.group(1)]
             except KeyError:
                 pass
-        
+
         prefix = prefix_re.match(hostname)
         if prefix:
             try:
@@ -173,6 +173,6 @@ def hostnameToLocation(hostname):
 
 ###############################################################################
 read_board_edit_id = 'baf9e6c9e6491fbb4d1d3b2e27899eb2'
-read_board_edit_url = 'http://markdownshare.com/edit/'
+read_board_edit_url = 'https://markdownshare.com/edit/'
 read_board_view_id = 'a3e2d6b1-6d74-44ec-a230-f866e90898b4'
-read_board_view_url = 'http://markdownshare.com/raw/' + read_board_view_id
+read_board_view_url = 'https://markdownshare.com/raw/' + read_board_view_id
